@@ -26,6 +26,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyDocumentationFilesFromPackages>true</CopyDocumentationFilesFromPackages>
     <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
