@@ -1,4 +1,5 @@
 ﻿using CMS;
+using CMS.Base;
 using CMS.Core;
 using CMS.DataEngine;
 
@@ -18,7 +19,7 @@ namespace XperienceCommunity.DatabaseAnonymizer
         {
             base.OnInit();
             InstallSettingsKey();
-            Service.Resolve<IAnonymizerService>().Run();
+            new CMSThread(() => Service.Resolve<IAnonymizerService>().Run()).Start();
         }
 
 

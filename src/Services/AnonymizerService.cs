@@ -7,6 +7,8 @@ using System.Data;
 
 using XperienceCommunity.DatabaseAnonymizer.Services;
 
+using TableManager = CMS.DataProviderSQL.TableManager;
+
 [assembly: RegisterImplementation(typeof(IAnonymizerService), typeof(AnonymizerService))]
 namespace XperienceCommunity.DatabaseAnonymizer.Services
 {
@@ -18,12 +20,18 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         private byte[]? mKey;
         private string? mSalt;
         private string? mEnabled;
+        private TableManager? mTableManager;
         private const int BATCH_SIZE = 500;
         private const string SALT_KEYNAME = "XperienceCommunityAnonymizationSalt";
         private const string ANONYMIZE_ENABLED_KEYNAME = "XperienceCommunityEnableAnonymization";
         private readonly IEventLogService eventLogService = eventLogService;
         private readonly IAppSettingsService appSettingsService = appSettingsService;
         private readonly IAnonymizationTableProvider anonymizationTableProvider = anonymizationTableProvider;
+
+        /// <summary>
+        /// Holds the maximum length of a column in the format "[table].[column]" to prevent unnecessary database queries.
+        /// </summary>
+        private readonly Dictionary<string, int> mColumnSizes = [];
 
 
         public const string ISANONYMIZED_SETTINGNAME = "XperienceCommunityDatabaseAnonymized";
@@ -36,6 +44,9 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
 
 
         private string AnonymizeEnabled => mEnabled ??= appSettingsService[ANONYMIZE_ENABLED_KEYNAME];
+
+
+        private TableManager TableManager => mTableManager ??= new TableManager();
 
 
         public void Run()
@@ -63,14 +74,14 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         {
             try
             {
+                SetProcessStarted(anonymize);
                 var tablesToUpdate = anonymizationTableProvider.GetTables();
-                var tm = new CMS.DataProviderSQL.TableManager();
                 foreach (string table in tablesToUpdate)
                 {
-                    ModifyTable(table, anonymize, tm);
+                    ModifyTable(table, anonymize);
                 }
 
-                SetDatabaseIsAnonymized(anonymize);
+                SetProcessFinished(anonymize);
             }
             catch (Exception ex)
             {
@@ -79,9 +90,9 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
-        private void ModifyTable(string table, bool anonymize, CMS.DataProviderSQL.TableManager tm)
+        private void ModifyTable(string table, bool anonymize)
         {
-            if (!tm.TableExists(table))
+            if (!TableManager.TableExists(table))
             {
                 return;
             }
@@ -92,7 +103,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
                 return;
             }
 
-            var identityColumns = tm.GetPrimaryKeyColumns(table);
+            var identityColumns = TableManager.GetPrimaryKeyColumns(table);
             if (!identityColumns.Any())
             {
                 return;
@@ -188,6 +199,10 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
                 {
                     continue;
                 }
+                if (!ValidateNewValueForColumn(table, column, newValue))
+                {
+                    continue;
+                }
 
                 values.Add($"{column} = '{newValue}'");
             }
@@ -202,10 +217,37 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
-        private void SetDatabaseIsAnonymized(bool isAnonymized)
+        private void SetProcessStarted(bool isAnonymized) =>
+            eventLogService.LogInformation(nameof(AnonymizerService), isAnonymized ? "ANONYMIZE_START" : "DEANONYMIZE_START");
+
+
+        private void SetProcessFinished(bool isAnonymized)
         {
-            eventLogService.LogInformation(nameof(AnonymizerService), isAnonymized ? "ANONYMIZED" : "DEANONYMIZED");
+            eventLogService.LogInformation(nameof(AnonymizerService), isAnonymized ? "ANONYMIZE_END" : "DEANONYMIZE_END");
             SettingsKeyInfoProvider.SetGlobalValue(ISANONYMIZED_SETTINGNAME, isAnonymized);
+        }
+
+
+        /// <summary>
+        /// Returns <c>true</c> if the provided value can successfully be inserted into the column.
+        /// </summary>
+        private bool ValidateNewValueForColumn(string table, string column, string newValue)
+        {
+            string key = $"{table}.{column}";
+            if (!mColumnSizes.TryGetValue(key, out int columnSize))
+            {
+                var result = TableManager.GetColumnInformation(table, column);
+                if (result.Tables.Count == 0 || result.Tables[0].Rows.Count == 0)
+                {
+                    return false;
+                }
+
+                columnSize = ValidationHelper.GetInteger(result.Tables[0].Rows[0]["DataSize"], 0);
+                mColumnSizes.Add(key, columnSize);
+            }
+
+            // -1 indicates nvarchar(max)
+            return columnSize == -1 || newValue.Length <= columnSize;
         }
     }
 }
