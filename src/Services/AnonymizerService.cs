@@ -80,13 +80,19 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
 
         private void ModifyTable(string table, bool anonymize)
         {
+            var tm = new CMS.DataProviderSQL.TableManager();
+            if (!tm.TableExists(table))
+            {
+                return;
+            }
+
             var columnsToUpdate = anonymizationTableProvider.GetColumns(table);
             if (!columnsToUpdate.Any())
             {
                 return;
             }
 
-            var identityColumns = new CMS.DataProviderSQL.TableManager().GetPrimaryKeyColumns(table);
+            var identityColumns = tm.GetPrimaryKeyColumns(table);
             if (!identityColumns.Any())
             {
                 return;

@@ -1,9 +1,10 @@
 ﻿using CMS;
 using CMS.ContactManagement;
+using CMS.Core;
 
 using XperienceCommunity.DatabaseAnonymizer.Services;
 
-[assembly: RegisterImplementation(typeof(IAnonymizationTableProvider), typeof(AnonymizationTableProvider))]
+[assembly: RegisterImplementation(typeof(IAnonymizationTableProvider), typeof(AnonymizationTableProvider), Priority = RegistrationPriority.Fallback)]
 namespace XperienceCommunity.DatabaseAnonymizer.Services
 {
     public class AnonymizationTableProvider : IAnonymizationTableProvider
