@@ -64,9 +64,10 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             try
             {
                 var tablesToUpdate = anonymizationTableProvider.GetTables();
+                var tm = new CMS.DataProviderSQL.TableManager();
                 foreach (string table in tablesToUpdate)
                 {
-                    ModifyTable(table, anonymize);
+                    ModifyTable(table, anonymize, tm);
                 }
 
                 SetDatabaseIsAnonymized(anonymize);
@@ -78,9 +79,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
-        private void ModifyTable(string table, bool anonymize)
+        private void ModifyTable(string table, bool anonymize, CMS.DataProviderSQL.TableManager tm)
         {
-            var tm = new CMS.DataProviderSQL.TableManager();
             if (!tm.TableExists(table))
             {
                 return;
@@ -191,6 +191,11 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
 
                 values.Add($"{column} = '{newValue}'");
             }
+            if (!values.Any())
+            {
+                return string.Empty;
+            }
+
             var where = identityColumns.Select(col => $"{col} = {row[col]}");
 
             return $"UPDATE {table} SET {string.Join(",", values)} WHERE {string.Join(" AND ", where)}";
