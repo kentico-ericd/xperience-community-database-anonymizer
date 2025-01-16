@@ -36,7 +36,7 @@ The anonymization/deanonymization process will _only_ run if there are two appli
 
 Add these keys to your `web.config` with the desired salt, and upon the next application start, the database will be anonymized. A new settings key (installed automatically) named "XperienceCommunityDatabaseAnonymized" tracks the current state of the database, so it is safe to leave these keys in the `web.config`- the process will only run once.
 
-To restore the database to its original state, set the "XperienceCommunityEnableAnonymization" key to false. If you are shipping the entire project (not just the sanitized database), be sure to remove the salt from the `web.config`!
+The anonymization process runs in the background on application start. To monitor its progress, check the __Event log__ for "ANONYMIZE_START" and "ANONYMIZE_END" events (or, the equivalent "DEANONYMIZE" events). To restore the database to its original state, set the "XperienceCommunityEnableAnonymization" key to false. If you are shipping the entire project (not just the sanitized database), be sure to remove the salt from the `web.config`!
 
 ## Full Instructions
 
