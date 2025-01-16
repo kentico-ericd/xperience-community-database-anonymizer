@@ -25,6 +25,8 @@ Install-Package Xperience.Community.DatabaseAnonymizer
 
 ## Quick Start
 
+> :warning: Always make a backup of your database _before_ running anonymization!
+
 The anonymization/deanonymization process will _only_ run if there are two application settings present in the CMS project's `web.config`:
 
 ```xml
