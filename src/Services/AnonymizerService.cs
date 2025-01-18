@@ -15,7 +15,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
     public class AnonymizerService(
         IEventLogService eventLogService,
         IAnonymizationTableProvider anonymizationTableProvider,
-        IAppSettingsService appSettingsService) : IAnonymizerService
+        IAppSettingsService appSettingsService,
+        IAnonymizationLogger anonmyzationLogger) : IAnonymizerService
     {
         private byte[]? mKey;
         private string? mSalt;
@@ -26,6 +27,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         private const string ANONYMIZE_ENABLED_KEYNAME = "XperienceCommunityEnableAnonymization";
         private readonly IEventLogService eventLogService = eventLogService;
         private readonly IAppSettingsService appSettingsService = appSettingsService;
+        private readonly IAnonymizationLogger anonymizationLogger = anonmyzationLogger;
         private readonly IAnonymizationTableProvider anonymizationTableProvider = anonymizationTableProvider;
 
         /// <summary>
@@ -118,7 +120,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
                 if (updateStatements.Any())
                 {
                     string query = string.Join(Environment.NewLine, updateStatements);
-                    ConnectionHelper.ExecuteNonQuery(query, null, QueryTypeEnum.SQLQuery);
+                    int rowsModified = ConnectionHelper.ExecuteNonQuery(query, null, QueryTypeEnum.SQLQuery);
+                    anonymizationLogger.LogModification(table, rowsModified);
                 }
 
                 currentPage++;
@@ -217,13 +220,17 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
-        private void SetProcessStarted(bool isAnonymized) =>
+        private void SetProcessStarted(bool isAnonymized)
+        {
+            anonymizationLogger.LogStart();
             eventLogService.LogInformation(nameof(AnonymizerService), isAnonymized ? "ANONYMIZE_START" : "DEANONYMIZE_START");
+        }
 
 
         private void SetProcessFinished(bool isAnonymized)
         {
-            eventLogService.LogInformation(nameof(AnonymizerService), isAnonymized ? "ANONYMIZE_END" : "DEANONYMIZE_END");
+            anonymizationLogger.LogEnd();
+            eventLogService.LogInformation(nameof(AnonymizerService), isAnonymized ? "ANONYMIZE_END" : "DEANONYMIZE_END", anonymizationLogger.GetLog());
             SettingsKeyInfoProvider.SetGlobalValue(ISANONYMIZED_SETTINGNAME, isAnonymized);
         }
 
