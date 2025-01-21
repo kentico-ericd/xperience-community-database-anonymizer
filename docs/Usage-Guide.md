@@ -32,5 +32,6 @@ For example, you may want to anonymize data entered in your forms:
       ]
     },
     // Other tables...
+  ]
 }
 ```
