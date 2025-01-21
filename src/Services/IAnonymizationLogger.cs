@@ -3,7 +3,7 @@
     /// <summary>
     /// Contains methods for recording anonymization operations.
     /// </summary>
-    public interface IAnonymizationLogger
+    internal interface IAnonymizationLogger : IService
     {
         /// <summary>
         /// Logs the start time of the anonymization process.

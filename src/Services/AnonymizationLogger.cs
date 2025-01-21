@@ -8,7 +8,7 @@ using XperienceCommunity.DatabaseAnonymizer.Services;
 [assembly: RegisterImplementation(typeof(IAnonymizationLogger), typeof(AnonymizationLogger))]
 namespace XperienceCommunity.DatabaseAnonymizer.Services
 {
-    public class AnonymizationLogger : IAnonymizationLogger
+    internal class AnonymizationLogger : IAnonymizationLogger
     {
         private DateTime? mEnd;
         private DateTime? mStart;
