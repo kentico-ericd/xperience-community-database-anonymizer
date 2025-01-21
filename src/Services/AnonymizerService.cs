@@ -44,17 +44,20 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             anonymizationLogger.LogTableStart(table.TableName);
             if (!TableManager.TableExists(table.TableName))
             {
+                anonymizationLogger.LogError($"Skipped nonexistent table {table.TableName}");
                 return;
             }
 
             if (!table.AnonymizeColumns.Any())
             {
+                anonymizationLogger.LogError($"Skipped table {table.TableName} with no columns");
                 return;
             }
 
             var identityColumns = TableManager.GetPrimaryKeyColumns(table.TableName);
             if (!identityColumns.Any())
             {
+                anonymizationLogger.LogError($"Skipped table {table.TableName} with no identity columns");
                 return;
             }
 

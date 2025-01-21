@@ -22,10 +22,11 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             }
 
             string text = await File.ReadAllTextAsync(Constants.TABLES_FILENAME);
-            var config = JsonConvert.DeserializeObject<TablesConfiguration>(text) ??
-                throw new JsonReaderException($"The configuration file {Constants.TABLES_FILENAME} cannot be deserialized.");
 
-            return config;
+            return JsonConvert.DeserializeObject<TablesConfiguration>(text, new JsonSerializerSettings()
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace
+            }) ?? throw new JsonReaderException($"The configuration file {Constants.TABLES_FILENAME} cannot be deserialized.");
         }
 
 

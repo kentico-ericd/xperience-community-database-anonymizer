@@ -26,6 +26,10 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
+        public void LogError(string message) =>
+            AnsiConsole.MarkupLine($"[{Constants.ERROR_COLOR}]{message}[/]");
+
+
         public void LogModification(string table, int rowsModified)
         {
             if (rowsModified <= 0)

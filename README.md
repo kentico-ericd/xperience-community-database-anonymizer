@@ -5,7 +5,7 @@
 
 ## Description
 
-This Kentico 13 integration allows developers to encrypt sensitive data within the Kentico database using a salt of their choosing. The data can only be decrypted using this salt, so the database can be shared with members outside of the organization safely. Once a backup of the database with anonymized data is created, the original database can be decrypted to restore the sensitive data.
+This dotnet tool allows developers to anonymize sensitive data within a Kentico 13 database. The database remains in a usable state and can be connected to a Kentico 13 instance. This can be useful to protect user and visitor personal data when sending the database to third-parties including Kentico Support.
 
 ## Requirements
 
@@ -15,28 +15,23 @@ This Kentico 13 integration allows developers to encrypt sensitive data within t
 | ----------------- | --------------- |
 | >= 13.0.0         | >= 1.0.0        |
 
-## Package Installation
+## Installing the tool
 
-Add the package to your CMS application using Visual Studio's [Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio) or [NuGet CLI](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell):
+Run the following command from a command prompt such as Powershell:
 
 ```powershell
-Install-Package Xperience.Community.DatabaseAnonymizer
+dotnet tool install XperienceCommunity.DatabaseAnonymizer -g
 ```
 
 ## Quick Start
 
-> :warning: Always make a backup of your database _before_ running anonymization!
+Run the following command from a command prompt such as Powershell:
 
-The anonymization/deanonymization process will _only_ run if there are two application settings present in the CMS project's `web.config`:
-
-```xml
-<add key="XperienceCommunityEnableAnonymization" value="true" />
-<add key="XperienceCommunityAnonymizationSalt" value="<your salt>" />
+```powershell
+xperience-anonymizer
 ```
 
-Add these keys to your `web.config` with the desired salt, and upon the next application start, the database will be anonymized. A new settings key (installed automatically) named "XperienceCommunityDatabaseAnonymized" tracks the current state of the database, so it is safe to leave these keys in the `web.config`- the process will only run once.
-
-The anonymization process runs in the background on application start. To monitor its progress, check the __Event log__ for "ANONYMIZE_START" and "ANONYMIZE_END" events (or, the equivalent "DEANONYMIZE" events). The "END" event will contain a detailed description of the process and modified records. To restore the database to its original state, set the "XperienceCommunityEnableAnonymization" key to false. If you are shipping the entire project (not just the sanitized database), be sure to remove the salt from the `web.config`!
+The tool will prompt you to provide connection details for the Kentico 13 database, then run the anonymization process.
 
 ## Full Instructions
 
