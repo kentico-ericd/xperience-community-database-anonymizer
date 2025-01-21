@@ -41,6 +41,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         private void AnonymizeTable(TableConfiguration table)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(table.TableName);
+            anonymizationLogger.LogTableStart(table.TableName);
             if (!TableManager.TableExists(table.TableName))
             {
                 return;
@@ -73,6 +74,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
                 currentPage++;
             }
             while (rows.Any());
+            anonymizationLogger.LogTableEnd(table.TableName);
         }
 
 

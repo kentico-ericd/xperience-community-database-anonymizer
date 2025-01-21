@@ -6,8 +6,14 @@ using CMS.Membership;
 
 namespace XperienceCommunity.DatabaseAnonymizer.Models
 {
+    /// <summary>
+    /// Represents the physical configuration file containing table and column names to anonymize.
+    /// </summary>
     internal class TablesConfiguration
     {
+        /// <summary>
+        /// The <see cref="TableConfiguration"/>s used during anonymization.
+        /// </summary>
         public IEnumerable<TableConfiguration> Tables { get; set; } = [
             new TableConfiguration() {
                 TableName = "CMS_Country",
@@ -60,6 +66,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(UserSettingsInfo.UserNickName),
                     nameof(UserSettingsInfo.UserSignature),
                     nameof(UserSettingsInfo.UserRegistrationInfo),
+                    nameof(UserSettingsInfo.UserDescription),
                     nameof(UserSettingsInfo.UserSkype),
                     nameof(UserSettingsInfo.UserIM),
                     nameof(UserSettingsInfo.UserPhone),
@@ -89,6 +96,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(CustomerInfo.CustomerPhone),
                     nameof(CustomerInfo.CustomerFax),
                     nameof(CustomerInfo.CustomerCompany),
+                    nameof(CustomerInfo.CustomerTaxRegistrationID),
+                    nameof(CustomerInfo.CustomerOrganizationID),
                 ]
             },
             new TableConfiguration() {

@@ -56,7 +56,7 @@ namespace XperienceCommunity.DatabaseAnonymizer
 
             connectionSettings.DatabaseName = AnsiConsole.Prompt(new SelectionPrompt<string>()
             {
-                Title = "Database:"
+                Title = $"[{Constants.PROMPT_COLOR}]Database:[/] "
             }.AddChoices(databaseNames));
 
             return connectionSettings;
