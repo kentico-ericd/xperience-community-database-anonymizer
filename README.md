@@ -23,6 +23,16 @@ Run the following command from a command prompt such as Powershell:
 dotnet tool install XperienceCommunity.DatabaseAnonymizer -g
 ```
 
+## Updating the tool
+
+Run the following command from a command prompt such as Powershell:
+
+```bash
+dotnet tool update XperienceCommunity.DatabaseAnonymizer -g
+```
+
+Updates to the tool may include changes to the `anonymizer_tables.json` file used to define the tables and columns anonymized by the tool (see the [Usage Guide](/docs/Usage-Guide.md#adding-your-tables)). In these cases, we recommend regenerating the default configuration file and merging your customizations into the generated file.
+
 ## Quick Start
 
 Run the following command from a command prompt such as Powershell:
