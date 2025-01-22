@@ -1,21 +1,33 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
 
 using CMS;
 using CMS.Helpers;
+
+using Spectre.Console;
 
 using XperienceCommunity.DatabaseAnonymizer.Services;
 
 [assembly: RegisterImplementation(typeof(IAnonymizationLogger), typeof(AnonymizationLogger))]
 namespace XperienceCommunity.DatabaseAnonymizer.Services
 {
-    public class AnonymizationLogger : IAnonymizationLogger
+    internal class AnonymizationLogger : IAnonymizationLogger
     {
-        private DateTime? mEnd;
-        private DateTime? mStart;
+        private readonly Stopwatch mStopwatch = new();
         private readonly Dictionary<string, int> mModifications = [];
 
 
-        public void LogEnd() => mEnd = DateTime.Now;
+        public void LogEnd()
+        {
+            mStopwatch.Stop();
+            double seconds = mStopwatch.ElapsedMilliseconds / (double)1000;
+            int minutes = ValidationHelper.GetInteger(Math.Ceiling(seconds / 60), 0);
+            AnsiConsole.MarkupLine($"[{Constants.SUCCESS_COLOR}]Finished successfully at {DateTime.Now.ToShortDateString()}" +
+                $" {DateTime.Now.ToShortTimeString()} ({minutes} minutes)[/]");
+        }
+
+
+        public void LogError(string message) =>
+            AnsiConsole.MarkupLine($"[{Constants.ERROR_COLOR}]{message}[/]");
 
 
         public void LogModification(string table, int rowsModified)
@@ -37,36 +49,27 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
-        public void LogStart() => mStart = DateTime.Now;
-
-
-        public string GetLog()
+        public void LogTableEnd(string tableName)
         {
-            var msgBuilder = new StringBuilder();
-            foreach (string table in mModifications.Keys)
+            if (!mModifications.TryGetValue(tableName, out int modifications))
             {
-                msgBuilder
-                    .Append("- [")
-                    .Append(table)
-                    .Append("] updated ")
-                    .Append(mModifications[table])
-                    .AppendLine(" rows");
+                modifications = 0;
             }
 
-            return $"Process finished in {GetMinutes()} minutes:{Environment.NewLine}{msgBuilder}";
+            AnsiConsole.MarkupLine($"Anonymized {modifications} rows in {tableName}");
         }
 
 
-        private int GetMinutes()
+        public void LogTableStart(string tableName) =>
+            AnsiConsole.MarkupLine($"Processing table {tableName}...");
+
+
+        public void LogStart()
         {
-            if (mStart is null || mEnd is null)
-            {
-                return 0;
-            }
-
-            double seconds = (mEnd - mStart).Value.TotalSeconds;
-
-            return ValidationHelper.GetInteger(Math.Ceiling(seconds / 60), 0);
+            mStopwatch.Start();
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"[{Constants.EMPHASIS_COLOR}]Anonymization process started at {DateTime.Now.ToShortDateString()}" +
+                $" {DateTime.Now.ToShortTimeString()}[/]");
         }
     }
 }

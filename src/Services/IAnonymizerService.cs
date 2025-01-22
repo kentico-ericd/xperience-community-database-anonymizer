@@ -1,13 +1,15 @@
-﻿namespace XperienceCommunity.DatabaseAnonymizer.Services
+﻿using XperienceCommunity.DatabaseAnonymizer.Models;
+
+namespace XperienceCommunity.DatabaseAnonymizer.Services
 {
     /// <summary>
-    /// Contains methods for anonymizing or deanonymizing database records.
+    /// Contains methods for anonymizing database records.
     /// </summary>
-    public interface IAnonymizerService
+    internal interface IAnonymizerService : IService
     {
         /// <summary>
-        /// Determines whether the anonymization process should run, then runs it.
+        /// Runs the anonymization process.
         /// </summary>
-        void Run();
+        void Anonymize(ConnectionSettings connectionSettings, TablesConfiguration tablesConfiguration);
     }
 }

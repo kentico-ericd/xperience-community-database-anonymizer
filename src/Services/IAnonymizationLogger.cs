@@ -1,14 +1,21 @@
 ﻿namespace XperienceCommunity.DatabaseAnonymizer.Services
 {
     /// <summary>
-    /// Contains methods for recording anonymization operations.
+    /// Contains methods for logging anonymization operations.
     /// </summary>
-    public interface IAnonymizationLogger
+    internal interface IAnonymizationLogger : IService
     {
         /// <summary>
-        /// Logs the start time of the anonymization process.
+        /// Logs information regarding the end of anonymization.
         /// </summary>
-        void LogStart();
+        void LogEnd();
+
+
+        /// <summary>
+        /// Logs an error.
+        /// </summary>
+        /// <param name="message">The error to log.</param>
+        void LogError(string message);
 
 
         /// <summary>
@@ -20,14 +27,22 @@
 
 
         /// <summary>
-        /// Logs the end time of the anonymization process.
+        /// Logs information regarding the start of anonymization.
         /// </summary>
-        void LogEnd();
+        void LogStart();
 
 
         /// <summary>
-        /// Gets a string summarizing the anonymization process suitable for the Event log.
+        /// Logs information after a table has finished processing.
         /// </summary>
-        string GetLog();
+        /// <param name="tableName">The name of the processed table.</param>
+        void LogTableEnd(string tableName);
+
+
+        /// <summary>
+        /// Logs information before a table is processed.
+        /// </summary>
+        /// <param name="tableName">The name of the table to process.</param>
+        void LogTableStart(string tableName);
     }
 }

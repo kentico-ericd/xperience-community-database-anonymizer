@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Autofac" />
     <PackageReference Include="Kentico.Xperience.Libraries" />
-	  <PackageReference Include="System.Text.Encoding.CodePages" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+	  <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Spectre.Console" />
   </ItemGroup>
 </Project>
