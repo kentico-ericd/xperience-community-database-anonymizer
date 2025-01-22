@@ -45,12 +45,14 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             if (!TableManager.TableExists(table.TableName))
             {
                 anonymizationLogger.LogError($"Skipped nonexistent table {table.TableName}");
+
                 return;
             }
 
             if (!table.AnonymizeColumns.Any())
             {
                 anonymizationLogger.LogError($"Skipped table {table.TableName} with no columns");
+
                 return;
             }
 
@@ -58,6 +60,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             if (!identityColumns.Any())
             {
                 anonymizationLogger.LogError($"Skipped table {table.TableName} with no identity columns");
+
                 return;
             }
 
@@ -65,8 +68,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             IEnumerable<DataRow> rows;
             do
             {
-                rows = GetPagedResult(table.TableName, table.AnonymizeColumns.Union(identityColumns), identityColumns[0], currentPage);
-                var updateStatements = rows.Select(r => GetUpdateRowStatement(r, table.TableName, table.AnonymizeColumns, identityColumns));
+                rows = GetPagedResult(table, identityColumns, currentPage);
+                var updateStatements = rows.Select(r => GetUpdateRowStatement(r, table, identityColumns));
                 if (updateStatements.Any())
                 {
                     string query = string.Join(Environment.NewLine, updateStatements);
@@ -105,21 +108,26 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             }
 
             return result.ToString();
-
         }
 
 
         /// <summary>
         /// Gets paged records from a database table.
         /// </summary>
-        /// <param name="table">The table name.</param>
-        /// <param name="columns">The columns to retrieve in the SELECT statement.</param>
-        /// <param name="orderColumn">The column to use in the ORDER BY clause (required for paging).</param>
+        /// <param name="table">The configuration of the current table being processed.</param>
+        /// <param name="identityColumns">The identity columns of the current table.</param>
         /// <param name="currentPage">The page to retrieve.</param>
-        private static IEnumerable<DataRow> GetPagedResult(string table, IEnumerable<string> columns, string orderColumn, int currentPage)
+        private static IEnumerable<DataRow> GetPagedResult(TableConfiguration table, IEnumerable<string> identityColumns, int currentPage)
         {
             int offset = currentPage * BATCH_SIZE;
-            string queryText = $"SELECT {string.Join(", ", columns)} FROM {table} ORDER BY {orderColumn} OFFSET {offset} ROWS FETCH NEXT {BATCH_SIZE} ROWS ONLY";
+            var selectColumns = table.AnonymizeColumns.Union(identityColumns);
+            string? orderColumn = identityColumns.FirstOrDefault();
+            if (orderColumn is null)
+            {
+                return [];
+            }
+
+            string queryText = $"SELECT {string.Join(", ", selectColumns)} FROM {table} ORDER BY {orderColumn} OFFSET {offset} ROWS FETCH NEXT {BATCH_SIZE} ROWS ONLY";
             var result = ConnectionHelper.ExecuteQuery(queryText, null, QueryTypeEnum.SQLQuery);
             if (result.Tables.Count == 0)
             {
@@ -134,17 +142,15 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         /// Gets a SQL UPDATE statement used to anonymize or deanonymize the columns of a record.
         /// </summary>
         /// <param name="row">The record to update.</param>
-        /// <param name="table">The name of the table containing the record.</param>
-        /// <param name="columnsToUpdate">The columns of the record that should be updated.</param>
+        /// <param name="tableConfiguration">The configuration of the current table being processed.</param>
         /// <param name="identityColumns">The identity columns of the table.</param>
         private string GetUpdateRowStatement(
             DataRow row,
-            string table,
-            IEnumerable<string> columnsToUpdate,
+            TableConfiguration tableConfiguration,
             IEnumerable<string> identityColumns)
         {
             var values = new List<string>();
-            foreach (string column in columnsToUpdate)
+            foreach (string column in tableConfiguration.AnonymizeColumns)
             {
                 object currentValue = row[column];
                 if (currentValue is null)
@@ -167,7 +173,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
 
             var where = identityColumns.Select(col => $"{col} = {row[col]}");
 
-            return $"UPDATE {table} SET {string.Join(",", values)} WHERE {string.Join(" AND ", where)}";
+            return $"UPDATE {tableConfiguration.TableName} SET {string.Join(",", values)} WHERE {string.Join(" AND ", where)}";
         }
     }
 }

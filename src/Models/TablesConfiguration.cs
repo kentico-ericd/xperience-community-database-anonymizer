@@ -12,7 +12,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
     internal class TablesConfiguration
     {
         /// <summary>
-        /// The <see cref="TableConfiguration"/>s used during anonymization.
+        /// The <see cref="TableConfiguration"/>s used during anonymization. Can be overridden via customization to the
+        /// <see cref="Constants.TABLES_FILENAME"/> file.
         /// </summary>
         public IEnumerable<TableConfiguration> Tables { get; set; } = [
             new TableConfiguration() {
