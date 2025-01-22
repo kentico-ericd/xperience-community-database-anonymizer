@@ -49,7 +49,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
                 return;
             }
 
-            if (!table.AnonymizeColumns.Any())
+            if (!table.AnonymizeColumns.Any() && !table.NullColumns.Any())
             {
                 anonymizationLogger.LogError($"Skipped table {table.TableName} with no columns");
 
