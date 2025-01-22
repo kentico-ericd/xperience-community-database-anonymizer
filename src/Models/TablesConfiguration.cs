@@ -37,6 +37,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(EmailInfo.EmailSubject),
                     nameof(EmailInfo.EmailBody),
                     nameof(EmailInfo.EmailPlainTextBody),
+                    nameof(EmailInfo.EmailReplyTo),
                 ]
             },
             new TableConfiguration() {
@@ -72,7 +73,13 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(UserSettingsInfo.UserIM),
                     nameof(UserSettingsInfo.UserPhone),
                     nameof(UserSettingsInfo.UserPosition),
-                ]
+                ],
+                NullColumns =
+                [
+                    nameof(UserSettingsInfo.UserGender),
+                    nameof(UserSettingsInfo.UserDateOfBirth),
+                    nameof(UserSettingsInfo.UserTimeZoneID),
+                ],
             },
             new TableConfiguration() {
                 TableName = "COM_Address",
@@ -127,7 +134,12 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(AccountInfo.AccountEmail),
                     nameof(AccountInfo.AccountFax),
                     nameof(AccountInfo.AccountNotes),
-                ]
+                ],
+                NullColumns =
+                [
+                    nameof(AccountInfo.AccountCountryID),
+                    nameof(AccountInfo.AccountStateID),
+                ],
             },
             new TableConfiguration() {
                 TableName = "OM_Contact",
@@ -145,7 +157,14 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(ContactInfo.ContactEmail),
                     nameof(ContactInfo.ContactNotes),
                     nameof(ContactInfo.ContactCompanyName),
-                ]
+                ],
+                NullColumns =
+                [
+                    nameof(ContactInfo.ContactCountryID),
+                    nameof(ContactInfo.ContactStateID),
+                    nameof(ContactInfo.ContactBirthday),
+                    nameof(ContactInfo.ContactGender),
+                ],
             },
         ];
     }

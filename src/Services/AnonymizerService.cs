@@ -120,14 +120,15 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         private static IEnumerable<DataRow> GetPagedResult(TableConfiguration table, IEnumerable<string> identityColumns, int currentPage)
         {
             int offset = currentPage * BATCH_SIZE;
-            var selectColumns = table.AnonymizeColumns.Union(identityColumns);
+            var selectColumns = table.AnonymizeColumns.Union(table.NullColumns).Union(identityColumns);
             string? orderColumn = identityColumns.FirstOrDefault();
             if (orderColumn is null)
             {
                 return [];
             }
 
-            string queryText = $"SELECT {string.Join(", ", selectColumns)} FROM {table} ORDER BY {orderColumn} OFFSET {offset} ROWS FETCH NEXT {BATCH_SIZE} ROWS ONLY";
+            string queryText = $"SELECT {string.Join(", ", selectColumns)} FROM {table.TableName} ORDER BY {orderColumn} OFFSET {offset}" +
+                $" ROWS FETCH NEXT {BATCH_SIZE} ROWS ONLY";
             var result = ConnectionHelper.ExecuteQuery(queryText, null, QueryTypeEnum.SQLQuery);
             if (result.Tables.Count == 0)
             {
@@ -150,6 +151,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             IEnumerable<string> identityColumns)
         {
             var values = new List<string>();
+            // Process anonymize columns
             foreach (string column in tableConfiguration.AnonymizeColumns)
             {
                 object currentValue = row[column];
@@ -166,6 +168,19 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
 
                 values.Add($"{column} = '{newValue}'");
             }
+
+            // Process null columns
+            foreach (string column in tableConfiguration.NullColumns)
+            {
+                object currentValue = row[column];
+                if (currentValue is null)
+                {
+                    continue;
+                }
+
+                values.Add($"{column} = NULL");
+            }
+
             if (!values.Any())
             {
                 return string.Empty;
