@@ -8,6 +8,8 @@
 
 This dotnet tool allows developers to anonymize sensitive data within a Kentico 13 database. The database remains in a usable state and can be connected to a Kentico 13 instance. This can be useful to protect user and visitor personal data when sending the database to third-parties including Kentico Support.
 
+![Sample console output](/images/sample.png)
+
 ## Requirements
 
 ### Library Version Matrix
