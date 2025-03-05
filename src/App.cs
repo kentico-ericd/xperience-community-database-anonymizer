@@ -28,7 +28,8 @@ namespace XperienceCommunity.DatabaseAnonymizer
             {
                 var tablesConfig = await anonymizationTableProvider.GetTablesConfig();
                 AnsiConsole.Markup($"[{Constants.EMPHASIS_COLOR}]The anonymization process is irreversible! Please make sure you are" +
-                    $" executing the process against a backup.[/]{Environment.NewLine}");
+                    $" executing the process against a backup.[/]");
+                AnsiConsole.WriteLine();
                 var connectionSettings = GetConnectionSettings();
                 anonymizerService.Anonymize(connectionSettings, tablesConfig);
             }
@@ -54,10 +55,13 @@ namespace XperienceCommunity.DatabaseAnonymizer
                 throw new InvalidOperationException("Failed to retrieve databases from server");
             }
 
+            string databaseTitle = $"[{Constants.PROMPT_COLOR}]Database:[/] ";
             connectionSettings.DatabaseName = AnsiConsole.Prompt(new SelectionPrompt<string>()
             {
-                Title = $"[{Constants.PROMPT_COLOR}]Database:[/] "
+                Title = databaseTitle
             }.AddChoices(databaseNames));
+            // SelectionPrompts do not appear in console after selection, so print the selected value
+            AnsiConsole.Markup(databaseTitle + connectionSettings.DatabaseName);
 
             return connectionSettings;
         }
