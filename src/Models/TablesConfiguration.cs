@@ -3,6 +3,7 @@ using CMS.Ecommerce;
 using CMS.EmailEngine;
 using CMS.Globalization;
 using CMS.Membership;
+using CMS.Synchronization;
 
 namespace XperienceCommunity.DatabaseAnonymizer.Models
 {
@@ -41,12 +42,31 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                 ]
             },
             new TableConfiguration() {
+                TableName = "CMS_EmailOAuthCredentials",
+                AnonymizeColumns =
+                [
+                    nameof(EmailOAuthCredentialsInfo.EmailOAuthCredentialsClientSecret),
+                ],
+                NullColumns = [
+                    nameof(EmailOAuthCredentialsInfo.EmailOAuthCredentialsAccessToken),
+                ]
+            },
+            new TableConfiguration() {
                 TableName = "CMS_State",
                 AnonymizeColumns =
                 [
                     nameof(StateInfo.StateName),
                     nameof(StateInfo.StateDisplayName),
                     nameof(StateInfo.StateCode),
+                ]
+            },
+            new TableConfiguration() {
+                TableName = "CMS_SMTPServer",
+                AnonymizeColumns = [
+                    nameof(SMTPServerInfo.ServerUserName)
+                ],
+                NullColumns = [
+                    nameof(SMTPServerInfo.ServerPassword)
                 ]
             },
             new TableConfiguration() {
@@ -166,6 +186,15 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(ContactInfo.ContactGender),
                 ],
             },
+            new TableConfiguration() {
+                TableName = "Staging_Server",
+                AnonymizeColumns = [
+                    nameof(ServerInfo.ServerUsername)
+                ],
+                NullColumns = [
+                    nameof(ServerInfo.ServerPassword)
+                ]
+            }
         ];
     }
 }
