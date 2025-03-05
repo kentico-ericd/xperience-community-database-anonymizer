@@ -2,18 +2,7 @@
 
 ## Supported tables
 
-See [`TablesConfiguration`](/src/Models/TablesConfiguration.cs) for a full list of supported tables and columns. This integration currently anonymizes the data contained in the following tables:
-
-- CMS_Country
-- CMS_Email
-- CMS_State
-- CMS_User
-- CMS_UserSettings
-- COM_Address
-- COM_Customer
-- COM_OrderAddress
-- OM_Account
-- OM_Contact
+See [`TablesConfiguration`](/src/Models/TablesConfiguration.cs) for a full list of supported tables and columns. The list can be customized using [this guide](#adding-your-tables).
 
 ## Adding your tables
 
