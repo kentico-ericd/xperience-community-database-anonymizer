@@ -6,7 +6,7 @@
 
 ## Description
 
-This dotnet tool allows developers to anonymize sensitive data within a Kentico 13 database. The database remains in a usable state and can be connected to a Kentico 13 instance. This can be useful to protect user and visitor personal data when sending the database to third-parties including Kentico Support.
+This dotnet tool allows developers to anonymize sensitive data within a Kentico database. The database remains in a usable state and can be connected to a Kentico instance. This can be useful to protect user and visitor personal data when sending the database to third-parties including Kentico Support.
 
 ![Sample console output](/images/sample.png)
 
@@ -16,14 +16,15 @@ This dotnet tool allows developers to anonymize sensitive data within a Kentico 
 
 | Xperience Version | Library Version |
 | ----------------- | --------------- |
-| >= 13.0.0         | >= 1.0.0        |
+| >= 13.0.0         | 1.x.y           |
+| >= 30.0.0         | 2.x.y           |
 
 ## Installing the tool
 
 Run the following command from a command prompt such as Powershell:
 
 ```powershell
-dotnet tool install XperienceCommunity.DatabaseAnonymizer -g
+dotnet tool install XperienceCommunity.DatabaseAnonymizer -g --version 1.0.0
 ```
 
 ## Updating the tool
@@ -44,7 +45,7 @@ Run the following command from a command prompt such as Powershell:
 xperience-anonymizer
 ```
 
-The tool will prompt you to provide connection details for the Kentico 13 database, then run the anonymization process.
+The tool will prompt you to provide connection details for the Kentico database, then run the anonymization process.
 
 ## Full Instructions
 
