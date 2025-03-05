@@ -13,6 +13,30 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
     internal class TablesConfiguration
     {
         /// <summary>
+        /// A list of settings key names whose value will be set to <c>NULL</c>.
+        /// </summary>
+        public IEnumerable<string> SettingsKeys { get; set; } = [
+            "CMSSMTPServerUser",
+            "CMSSMTPServerPassword",
+            "CMSStagingServiceUsername",
+            "CMSStagingServicePassword",
+            "CMSPOP3ServerName",
+            "CMSPOP3UserName",
+            "CMSPOP3Password",
+            "CMSGoogleTranslateAPIKey",
+            "CMSSalesForceCredentials",
+            "CMSWIFTrustedCertificateThumbprint",
+            "CMSBitlyAPIKey",
+            "CMSPayPalCredentialsClientSecret",
+            "CMSAzureComputerVisionAPIKey",
+            "CMSAzureTextAnalyticsAPIKey",
+            "CMSPOP3OAuthCredentials",
+            "CMSReCaptchaV3PrivateKey",
+            "CMSSMTPServerOAuthCredentials"
+        ];
+
+
+        /// <summary>
         /// The <see cref="TableConfiguration"/>s used during anonymization. Can be overridden via customization to the
         /// <see cref="Constants.TABLES_FILENAME"/> file.
         /// </summary>
