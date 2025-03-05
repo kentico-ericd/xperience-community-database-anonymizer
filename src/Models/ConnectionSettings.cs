@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
 namespace XperienceCommunity.DatabaseAnonymizer.Models
 {
@@ -37,7 +37,7 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
         /// </summary>
         public string ToConnectionString()
         {
-            var builder = new SqlConnectionStringBuilder();
+            var builder = new SqlConnectionStringBuilder() { TrustServerCertificate = true };
             if (!string.IsNullOrEmpty(DataSource))
             {
                 builder.DataSource = DataSource;

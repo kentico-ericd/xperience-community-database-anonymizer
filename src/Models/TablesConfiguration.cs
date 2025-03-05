@@ -1,5 +1,4 @@
 ﻿using CMS.ContactManagement;
-using CMS.Ecommerce;
 using CMS.EmailEngine;
 using CMS.Globalization;
 using CMS.Membership;
@@ -54,70 +53,8 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                 AnonymizeColumns =
                 [
                     nameof(UserInfo.FirstName),
-                    nameof(UserInfo.MiddleName),
                     nameof(UserInfo.LastName),
-                    nameof(UserInfo.FullName),
                     nameof(UserInfo.Email),
-                    nameof(UserInfo.UserLastLogonInfo),
-                ]
-            },
-            new TableConfiguration() {
-                TableName = "CMS_UserSettings",
-                AnonymizeColumns =
-                [
-                    nameof(UserSettingsInfo.UserNickName),
-                    nameof(UserSettingsInfo.UserSignature),
-                    nameof(UserSettingsInfo.UserRegistrationInfo),
-                    nameof(UserSettingsInfo.UserDescription),
-                    nameof(UserSettingsInfo.UserSkype),
-                    nameof(UserSettingsInfo.UserIM),
-                    nameof(UserSettingsInfo.UserPhone),
-                    nameof(UserSettingsInfo.UserPosition),
-                ],
-                NullColumns =
-                [
-                    nameof(UserSettingsInfo.UserGender),
-                    nameof(UserSettingsInfo.UserDateOfBirth),
-                    nameof(UserSettingsInfo.UserTimeZoneID),
-                ],
-            },
-            new TableConfiguration() {
-                TableName = "COM_Address",
-                AnonymizeColumns =
-                [
-                    nameof(AddressInfo.AddressName),
-                    nameof(AddressInfo.AddressLine1),
-                    nameof(AddressInfo.AddressLine2),
-                    nameof(AddressInfo.AddressCity),
-                    nameof(AddressInfo.AddressZip),
-                    nameof(AddressInfo.AddressPhone),
-                    nameof(AddressInfo.AddressPersonalName),
-                ]
-            },
-            new TableConfiguration() {
-                TableName = "COM_Customer",
-                AnonymizeColumns =
-                [
-                    nameof(CustomerInfo.CustomerFirstName),
-                    nameof(CustomerInfo.CustomerLastName),
-                    nameof(CustomerInfo.CustomerEmail),
-                    nameof(CustomerInfo.CustomerPhone),
-                    nameof(CustomerInfo.CustomerFax),
-                    nameof(CustomerInfo.CustomerCompany),
-                    nameof(CustomerInfo.CustomerTaxRegistrationID),
-                    nameof(CustomerInfo.CustomerOrganizationID),
-                ]
-            },
-            new TableConfiguration() {
-                TableName = "COM_OrderAddress",
-                AnonymizeColumns =
-                [
-                    nameof(OrderAddressInfo.AddressLine1),
-                    nameof(OrderAddressInfo.AddressLine2),
-                    nameof(OrderAddressInfo.AddressCity),
-                    nameof(OrderAddressInfo.AddressZip),
-                    nameof(OrderAddressInfo.AddressPhone),
-                    nameof(OrderAddressInfo.AddressPersonalName),
                 ]
             },
             new TableConfiguration() {
