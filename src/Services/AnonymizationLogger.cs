@@ -49,6 +49,10 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
         }
 
 
+        public void LogSettingsKeys(int settingsKeysAffected) =>
+            AnsiConsole.MarkupLine($"Anonymized {settingsKeysAffected} rows in CMS_SettingsKey...");
+
+
         public void LogTableEnd(string tableName)
         {
             if (!mModifications.TryGetValue(tableName, out int modifications))

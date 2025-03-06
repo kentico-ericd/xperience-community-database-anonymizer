@@ -33,6 +33,13 @@
 
 
         /// <summary>
+        /// Logs information regarding the anonymization of settings keys.
+        /// </summary>
+        /// <param name="settingsKeysAffected">The number of settings keys modified.</param>
+        void LogSettingsKeys(int settingsKeysAffected);
+
+
+        /// <summary>
         /// Logs information after a table has finished processing.
         /// </summary>
         /// <param name="tableName">The name of the processed table.</param>

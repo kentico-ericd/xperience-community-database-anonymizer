@@ -3,6 +3,7 @@ using CMS.Ecommerce;
 using CMS.EmailEngine;
 using CMS.Globalization;
 using CMS.Membership;
+using CMS.Synchronization;
 
 namespace XperienceCommunity.DatabaseAnonymizer.Models
 {
@@ -11,6 +12,30 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
     /// </summary>
     internal class TablesConfiguration
     {
+        /// <summary>
+        /// A list of settings key names whose value will be set to <c>NULL</c>.
+        /// </summary>
+        public IEnumerable<string> SettingsKeys { get; set; } = [
+            "CMSSMTPServerUser",
+            "CMSSMTPServerPassword",
+            "CMSStagingServiceUsername",
+            "CMSStagingServicePassword",
+            "CMSPOP3ServerName",
+            "CMSPOP3UserName",
+            "CMSPOP3Password",
+            "CMSGoogleTranslateAPIKey",
+            "CMSSalesForceCredentials",
+            "CMSWIFTrustedCertificateThumbprint",
+            "CMSBitlyAPIKey",
+            "CMSPayPalCredentialsClientSecret",
+            "CMSAzureComputerVisionAPIKey",
+            "CMSAzureTextAnalyticsAPIKey",
+            "CMSPOP3OAuthCredentials",
+            "CMSReCaptchaV3PrivateKey",
+            "CMSSMTPServerOAuthCredentials"
+        ];
+
+
         /// <summary>
         /// The <see cref="TableConfiguration"/>s used during anonymization. Can be overridden via customization to the
         /// <see cref="Constants.TABLES_FILENAME"/> file.
@@ -41,12 +66,31 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                 ]
             },
             new TableConfiguration() {
+                TableName = "CMS_EmailOAuthCredentials",
+                AnonymizeColumns =
+                [
+                    nameof(EmailOAuthCredentialsInfo.EmailOAuthCredentialsClientSecret),
+                ],
+                NullColumns = [
+                    nameof(EmailOAuthCredentialsInfo.EmailOAuthCredentialsAccessToken),
+                ]
+            },
+            new TableConfiguration() {
                 TableName = "CMS_State",
                 AnonymizeColumns =
                 [
                     nameof(StateInfo.StateName),
                     nameof(StateInfo.StateDisplayName),
                     nameof(StateInfo.StateCode),
+                ]
+            },
+            new TableConfiguration() {
+                TableName = "CMS_SMTPServer",
+                AnonymizeColumns = [
+                    nameof(SMTPServerInfo.ServerUserName)
+                ],
+                NullColumns = [
+                    nameof(SMTPServerInfo.ServerPassword)
                 ]
             },
             new TableConfiguration() {
@@ -166,6 +210,15 @@ namespace XperienceCommunity.DatabaseAnonymizer.Models
                     nameof(ContactInfo.ContactGender),
                 ],
             },
+            new TableConfiguration() {
+                TableName = "Staging_Server",
+                AnonymizeColumns = [
+                    nameof(ServerInfo.ServerUsername)
+                ],
+                NullColumns = [
+                    nameof(ServerInfo.ServerPassword)
+                ]
+            }
         ];
     }
 }

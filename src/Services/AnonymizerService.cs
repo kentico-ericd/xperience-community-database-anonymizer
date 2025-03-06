@@ -33,8 +33,21 @@ namespace XperienceCommunity.DatabaseAnonymizer.Services
             {
                 AnonymizeTable(table);
             }
+            if (tablesConfiguration.SettingsKeys.Any())
+            {
+                AnonymizeSettingsKeys(tablesConfiguration.SettingsKeys);
+            }
 
             anonymizationLogger.LogEnd();
+        }
+
+
+        private void AnonymizeSettingsKeys(IEnumerable<string> settingsKeys)
+        {
+            string keyNames = string.Join(',', settingsKeys.Select(key => $"'{key}'"));
+            string query = $"UPDATE CMS_SettingsKey SET KeyValue = NULL WHERE KeyName IN ({keyNames})";
+            int rowsAffected = ConnectionHelper.ExecuteNonQuery(query, null, QueryTypeEnum.SQLQuery);
+            anonymizationLogger.LogSettingsKeys(rowsAffected);
         }
 
 
